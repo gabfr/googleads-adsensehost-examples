@@ -51,17 +51,10 @@
  *
  */
 
+require_once 'vendor/autoload.php';
+
 require_once 'templates/base.php';
 session_start();
-
-/************************************************
-  ATTENTION: Change this path to point to your
-  client library installation!
- ************************************************/
-set_include_path('/path/to/clientlib' . PATH_SEPARATOR . get_include_path());
-
-require_once 'Google/Client.php';
-require_once 'Google/Service/AdSenseHost.php';
 
 // Autoload example classes.
 function __autoload($class_name) {

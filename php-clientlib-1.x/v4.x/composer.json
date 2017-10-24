@@ -1,0 +1,10 @@
+{
+    "name": "gabfr/google-adsense-host-api",
+    "authors": [
+        {
+            "name": "Gabriel",
+            "email": "eu@gabrielf.com"
+        }
+    ],
+    "require": {"google/apiclient": "^2.0"}
+}
