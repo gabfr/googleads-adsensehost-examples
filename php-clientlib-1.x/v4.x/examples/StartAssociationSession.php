@@ -27,14 +27,11 @@ class StartAssociationSession {
    * @param $service Google_Service_AdSenseHost AdSenseHost service object on
    *     which to run the requests.
    */
-  public static function run($service) {
+  public static function run($service, $websiteUrl, $productCodes = ["afc", "afg", "afmc", "afs", "afv"]) {
     $separator = str_repeat('=', 80) . "\n";
     print $separator;
     print "Creating new association session\n";
     print $separator;
-
-    $productCodes = array('AFC');
-    $websiteUrl = 'http://www.examplehost.com/username';
 
     $result = $service->associationsessions->start($productCodes, $websiteUrl);
 

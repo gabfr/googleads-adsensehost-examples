@@ -118,7 +118,7 @@ echo '</div>';
 if ($client->getAccessToken()) {
   echo '<pre class="result">';
   // Now we're signed in, we can make our requests.
-  makeRequests($service);
+  handleAssociation($service);
   // Note that we re-store the access_token bundle, just in case anything
   // changed during the request - the main thing that might happen here is the
   // access token itself is refreshed if the application has offline access.
@@ -129,68 +129,21 @@ if ($client->getAccessToken()) {
 echo '</div>';
 echo pageFooter(__FILE__);
 
+function handleAssociation($service) {
+  global $_GET;
 
-// Makes all the API requests.
-function makeRequests($service) {
-  print "\n";
+  echo pageHeader('AdSense Host API - Association sample');
+  echo '<form action="" method="GET">';
+  echo '<input type="text" name="websiteUrl" placeholder="https://yourwebsite.com" />';
+  echo '<button type="submit">Submit</button>';
+  echo  '</form>';
 
-  $hostAdClients = GetAllAdClientsForHost::run($service, MAX_LIST_PAGE_SIZE);
-
-  if (!empty($hostAdClients)) {
-    // Get a host ad client ID, so we can run the dependent samples.
-    $exampleHostAdClientId = $hostAdClients[0]['id'];
-
-    GetAllCustomChannelsForHost::run($service, $exampleHostAdClientId,
-        MAX_LIST_PAGE_SIZE);
-
-    $customChannel =
-        AddCustomChannelToHost::run($service, $exampleHostAdClientId);
-
-    $customChannel = UpdateCustomChannelOnHost::run($service,
-        $exampleHostAdClientId, $customChannel->getId());
-
-    DeleteCustomChannelOnHost::run($service, $exampleHostAdClientId,
-        $customChannel->getId());
-
-    GetAllUrlChannelsForHost::run($service, $exampleHostAdClientId,
-        MAX_LIST_PAGE_SIZE);
-
-    $urlChannel =
-        AddUrlChannelToHost::run($service, $exampleHostAdClientId);
-
-    DeleteUrlChannelOnHost::run($service, $exampleHostAdClientId,
-        $urlChannel->getId());
-
-    GenerateReportForHost::run($service, $exampleHostAdClientId);
-  } else {
-    print 'No host ad clients found, unable to run dependent examples.';
-  }
-
-  if (PUB_ACCOUNT_ID != 'INSERT_CLIENT_PUB_ID_HERE') {
-    $pubAdClients = GetAllAdClientsForPublisher::run($service, PUB_ACCOUNT_ID,
-        MAX_LIST_PAGE_SIZE);
-
-    if (!empty($pubAdClients)) {
-      // Get a host ad client ID, so we can run the dependent samples.
-      $examplePubAdClientId = $pubAdClients[0]['id'];
-
-      GetAllAdUnitsForPublisher::run($service, PUB_ACCOUNT_ID,
-          $examplePubAdClientId, MAX_LIST_PAGE_SIZE);
-
-      $adUnit = AddAdUnitToPublisher::run($service, PUB_ACCOUNT_ID,
-          $examplePubAdClientId);
-
-      $adUnit = UpdateAdUnitOnPublisher::run($service, PUB_ACCOUNT_ID,
-          $examplePubAdClientId, $adUnit->getId());
-
-      DeleteAdUnitOnPublisher::run($service, PUB_ACCOUNT_ID,
-          $examplePubAdClientId, $adUnit->getId());
-
-      GenerateReportForPublisher::run($service, PUB_ACCOUNT_ID,
-          $examplePubAdClientId);
-    } else {
-      print 'No publisher ad clients found, unable to run dependent examples.';
-    }
+  $websiteUrl = array_key_exists("websiteUrl", $_GET) ? $_GET["websiteUrl"] : null;
+  
+  if (!is_null($websiteUrl) && parse_url($websiteUrl)) {
+    $res = StartAssociationSession::run($service, $websiteUrl);
+    if ($res) 
+      echo '<a class="login" href="' . $res->getRedirectUrl() . '">Associate website '.$websiteUrl.'</a>';
   }
 }
 

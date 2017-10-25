@@ -6,5 +6,10 @@
             "email": "eu@gabrielf.com"
         }
     ],
-    "require": {"google/apiclient": "^2.0"}
+    "require": {"google/apiclient": "^2.0"},
+    "autoload": {
+        "classmap": [
+            "examples"
+        ]
+    }
 }
